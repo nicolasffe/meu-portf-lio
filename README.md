@@ -1,4 +1,4 @@
-Meu Portfólio Digital
+## Meu Portfólio Digital
 Este é um projeto de portfólio acadêmico e profissional, desenvolvido como uma aplicação full-stack moderna. Ele serve como uma ferramenta de apresentação para exibir a trajetória educacional, competências técnicas, certificados e projetos de um desenvolvedor.
 
 O frontend foi construído com React, TypeScript e Vite, utilizando Tailwind CSS e shadcn/ui para uma interface elegante e responsiva. O backend é alimentado por Node.js e Express, com a capacidade de servir dinamicamente o conteúdo das seções do portfólio através de uma API RESTful.
