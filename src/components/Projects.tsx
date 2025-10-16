@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { motion, useInView } from "motion/react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 interface Project {
   id: number;
@@ -21,38 +21,18 @@ export function Projects() {
   const isInView = useInView(ref, { once: true, amount: 0.2 });
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
 
-  const projects: Project[] = [
-    {
-      id: 1,
-      title: "Sistema de Gerenciamento Acadêmico",
-      description: "Aplicação web para gerenciar notas, frequência e atividades acadêmicas com interface intuitiva.",
-      image: "https://images.unsplash.com/photo-1569693799105-4eb645d89aea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2RpbmclMjBwcm9qZWN0JTIwbGFwdG9wfGVufDF8fHx8MTc2MDQ3NTYwM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      technologies: ["React", "TypeScript", "Node.js"],
-      githubUrl: "https://github.com/seuusuario/projeto1",
-      liveUrl: "https://projeto1.demo.com",
-    },
-    {
-      id: 2,
-      title: "App de Estudos Colaborativo",
-      description: "Plataforma para estudantes compartilharem materiais, formar grupos de estudo e tirar dúvidas.",
-      image: "https://images.unsplash.com/photo-1737737351943-82e01f866e53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWIlMjBkZXZlbG9wbWVudCUyMHNjcmVlbnxlbnwxfHx8fDE3NjAzNjkxNDN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      technologies: ["Vue.js", "Firebase", "Tailwind"],
-      githubUrl: "https://github.com/seuusuario/projeto2",
-    },
-    {
-      id: 3,
-      title: "Dashboard de Visualização de Dados",
-      description: "Ferramenta para análise e visualização de dados acadêmicos com gráficos interativos.",
-      image: "https://images.unsplash.com/photo-1609921212029-bb5a28e60960?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjBhcHAlMjBkZXNpZ258ZW58MXx8fHwxNzYwMzk0Nzk5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      technologies: ["Python", "Django", "Chart.js"],
-      githubUrl: "https://github.com/seuusuario/projeto3",
-      liveUrl: "https://projeto3.demo.com",
-    },
-  ];
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/api/projects') 
+      .then(response => response.json())
+      .then(data => setProjects(data))
+      .catch(error => console.error('Erro ao buscar projetos:', error));
+  }, []);
+
 
   return (
     <section id="projects" className="py-20 px-4 relative overflow-hidden">
-      {/* Background decoration */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/3 left-0 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/3 right-0 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl" />

@@ -2,7 +2,7 @@ import { Award, Calendar, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 interface Certificate {
   id: number;
@@ -17,44 +17,14 @@ export function Certificates() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
-  const certificates: Certificate[] = [
-    {
-      id: 1,
-      title: "Desenvolvimento Web Full Stack",
-      issuer: "Udemy",
-      date: "Outubro 2024",
-      description: "Curso completo de desenvolvimento web com React, Node.js e bancos de dados.",
-    },
-    {
-      id: 2,
-      title: "Python para Ciência de Dados",
-      issuer: "Coursera",
-      date: "Agosto 2024",
-      description: "Fundamentos de análise de dados com Python, Pandas e NumPy.",
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
 
-    },
-    {
-      id: 3,
-      title: "Fundamentos de UX/UI Design",
-      issuer: "Google",
-      date: "Junho 2024",
-      description: "Princípios de design de interface e experiência do usuário.",
-    },
-    {
-      id: 4,
-      title: "Git e GitHub Essencial",
-      issuer: "LinkedIn Learning",
-      date: "Maio 2024",
-      description: "Controle de versão e colaboração em projetos de software.",
-    },
-    {
-      id: 5,
-      title: "Algoritmos e Estruturas de Dados",
-      issuer: "Universidade",
-      date: "Dezembro 2023",
-      description: "Curso avançado sobre algoritmos, complexidade e estruturas de dados.",
-    },
-  ];
+  useEffect(() => {
+    fetch('http://localhost:3001/api/certificates')
+      .then(response => response.json())
+      .then(data => setCertificates(data))
+      .catch(error => console.error('Erro ao buscar certificados:', error));
+  }, []);
 
   return (
     <section id="certificates" className="py-20 px-4 bg-gradient-to-b from-background via-purple-50/30 to-background">

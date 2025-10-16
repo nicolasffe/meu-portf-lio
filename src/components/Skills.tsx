@@ -12,10 +12,17 @@ interface Skill {
 interface SkillCategory {
   id: number;
   title: string;
-  icon: React.ReactNode;
+  icon: string; 
   skills: Skill[];
   color: string;
 }
+
+const icons: { [key: string]: React.ReactNode } = {
+  Code: <Code className="h-6 w-6" />,
+  Server: <Server className="h-6 w-6" />,
+  Database: <Database className="h-6 w-6" />,
+  Palette: <Palette className="h-6 w-6" />,
+};
 
 function AnimatedProgress({ value, delay = 0 }: { value: number; delay?: number }) {
   const [progress, setProgress] = useState(0);
@@ -46,56 +53,14 @@ export function Skills() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
-  const skillCategories: SkillCategory[] = [
-    {
-      id: 1,
-      title: "Frontend",
-      icon: <Code className="h-6 w-6" />,
-      color: "from-blue-500 to-cyan-500",
-      skills: [
-        { name: "HTML/CSS", level: 90 },
-        { name: "JavaScript", level: 85 },
-        { name: "React", level: 80 },
-        { name: "TypeScript", level: 75 },
-      ],
-    },
-    {
-      id: 2,
-      title: "Backend",
-      icon: <Server className="h-6 w-6" />,
-      color: "from-green-500 to-emerald-500",
-      skills: [
-        { name: "Node.js", level: 75 },
-        { name: "Python", level: 80 },
-        { name: "Java", level: 70 },
-        { name: "API REST", level: 85 },
-      ],
-    },
-    {
-      id: 3,
-      title: "Banco de Dados",
-      icon: <Database className="h-6 w-6" />,
-      color: "from-orange-500 to-red-500",
-      skills: [
-        { name: "MySQL", level: 80 },
-        { name: "PostgreSQL", level: 75 },
-        { name: "MongoDB", level: 70 },
-        { name: "Firebase", level: 65 },
-      ],
-    },
-    {
-      id: 4,
-      title: "Design & Outros",
-      icon: <Palette className="h-6 w-6" />,
-      color: "from-purple-500 to-pink-500",
-      skills: [
-        { name: "Figma", level: 75 },
-        { name: "Git/GitHub", level: 85 },
-        { name: "Tailwind CSS", level: 80 },
-        { name: "UX/UI", level: 70 },
-      ],
-    },
-  ];
+  const [skillCategories, setSkillCategories] = useState<SkillCategory[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/api/skills')
+      .then(response => response.json())
+      .then(data => setSkillCategories(data))
+      .catch(error => console.error('Erro ao buscar habilidades:', error));
+  }, []);
 
   return (
     <section id="skills" className="py-20 px-4 relative overflow-hidden">
@@ -139,7 +104,7 @@ export function Skills() {
                       className={`text-primary bg-gradient-to-br ${category.color} p-2 rounded-lg bg-clip-border`}
                     >
                       <div className="text-white">
-                        {category.icon}
+                        {icons[category.icon]}
                       </div>
                     </motion.div>
                     <span className="group-hover:text-primary transition-colors">
