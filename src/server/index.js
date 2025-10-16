@@ -1,16 +1,19 @@
 // src/server/index.js
 const express = require('express');
 const path = require('path');
-const cors = require('cors'); // Importa o pacote cors
+const cors = require('cors');
 const app = express();
 const port = 3001;
 
-app.use(cors()); // Habilita o CORS para todas as rotas
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Configurar o EJS como o motor de visualização
+// Configurar o EJS
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// --- Rota de Teste e Página EJS ---
 app.get('/home', (req, res) => {
   const data = {
     title: 'Página Inicial',
@@ -18,35 +21,33 @@ app.get('/home', (req, res) => {
   };
   res.render('home', data);
 });
-// Middleware para analisar o corpo das requisições JSON
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Rota de exemplo para testar o servidor
 app.get('/api', (req, res) => {
   res.json({ message: 'Bem-vindo à API do portfólio!' });
 });
 
-app.listen(port, () => {
-  console.log(`Servidor backend rodando em http://localhost:${port}`);
-});
+// --- DADOS EM MEMÓRIA (com exemplos) ---
 
-// --- DADOS DOS PROJETOS ---
 let projects = [
-  { id: 1, title: "Sistema de Gerenciamento Acadêmico", description: "Aplicação web para gerenciar notas...", technologies: ["React", "TypeScript", "Node.js"] },
-  { id: 2, title: "App de Estudos Colaborativo", description: "Plataforma para estudantes compartilharem materiais...", technologies: ["Vue.js", "Firebase", "Tailwind"] },
-  {
-    id: 3,
-    title: "Plataforma de E-commerce para Livros",
-    description: "Uma loja online completa para venda de livros, com carrinho de compras, sistema de avaliação e painel administrativo.",
-    image: "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxib29rc3RvcmV8ZW58MXx8fHwxNzYwNDc1NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    technologies: ["Node.js", "Express", "EJS", "MongoDB"],
-    githubUrl: "https://github.com/seuusuario/ecommerce-livros",
-    liveUrl: "https://livraria-demo.com"
+  { 
+    id: 1, 
+    title: "Sistema de Gerenciamento Acadêmico", 
+    description: "Aplicação web para gerenciar notas, frequência e atividades acadêmicas com interface intuitiva.", 
+    image: "https://images.unsplash.com/photo-1569693799105-4eb645d89aea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2RpbmclMjBwcm9qZWN0JTIwbGFwdG9wfGVufDF8fHx8MTc2MDQ3NTYwM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    technologies: ["React", "TypeScript", "Node.js"],
+    githubUrl: "https://github.com/seuusuario/projeto1",
+    liveUrl: "https://projeto1.demo.com",
+  },
+  { 
+    id: 2, 
+    title: "App de Estudos Colaborativo", 
+    description: "Plataforma para estudantes compartilharem materiais, formar grupos de estudo e tirar dúvidas.", 
+    image: "https://images.unsplash.com/photo-1737737351943-82e01f866e53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWIlMjBkZXZlbG9wbWVudCUyMHNjcmVlbnxlbnwxfHx8fDE3NjAzNjkxNDN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    technologies: ["Vue.js", "Firebase", "Tailwind"],
+    githubUrl: "https://github.com/seuusuario/projeto2",
   }
 ];
 
-// --- DADOS DOS CERTIFICADOS ---
 let certificates = [
     {
       id: 1,
@@ -73,7 +74,6 @@ let certificates = [
     },
 ];
 
-// --- DADOS DAS HABILIDADES ---
 let skillCategories = [
     {
       id: 1,
@@ -123,61 +123,103 @@ let skillCategories = [
     },
 ];
 
+// --- ROTAS DA API PARA PROJETOS ---
 
-// --- ROTAS DA API ---
+app.get('/api/projects', (req, res) => res.json(projects));
 
-// GET: Obter todos os projetos
-app.get('/api/projects', (req, res) => {
-  res.json(projects);
-});
-
-// GET: Obter todos os certificados
-app.get('/api/certificates', (req, res) => {
-  res.json(certificates);
-});
-
-// GET: Obter todas as habilidades
-app.get('/api/skills', (req, res) => {
-  res.json(skillCategories);
-});
-
-
-// --- ROTAS DE MANIPULAÇÃO DE DADOS (POST, PUT, DELETE) ---
-
-// POST: Criar um novo projeto
 app.post('/api/projects', (req, res) => {
-  const newProject = {
-    id: projects.length + 1,
-    title: req.body.title,
-    description: req.body.description,
-    technologies: req.body.technologies || []
-  };
+  const newProject = { id: projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1, ...req.body };
   projects.push(newProject);
   res.status(201).json(newProject);
 });
 
-// PUT: Atualizar um projeto existente
 app.put('/api/projects/:id', (req, res) => {
-  const projectId = parseInt(req.params.id, 10);
-  const projectIndex = projects.findIndex(p => p.id === projectId);
-
-  if (projectIndex !== -1) {
-    projects[projectIndex] = { ...projects[projectIndex], ...req.body };
-    res.json(projects[projectIndex]);
+  const { id } = req.params;
+  const index = projects.findIndex(p => p.id === parseInt(id));
+  if (index !== -1) {
+    projects[index] = { ...projects[index], ...req.body };
+    res.json(projects[index]);
   } else {
     res.status(404).json({ message: 'Projeto não encontrado' });
   }
 });
 
-// DELETE: Excluir um projeto
 app.delete('/api/projects/:id', (req, res) => {
-  const projectId = parseInt(req.params.id, 10);
+  const { id } = req.params;
   const initialLength = projects.length;
-  projects = projects.filter(p => p.id !== projectId);
-
+  projects = projects.filter(p => p.id !== parseInt(id));
   if (projects.length < initialLength) {
-    res.status(204).send(); // No content
+    res.status(204).send();
   } else {
     res.status(404).json({ message: 'Projeto não encontrado' });
   }
+});
+
+// --- ROTAS DA API PARA CERTIFICADOS ---
+
+app.get('/api/certificates', (req, res) => res.json(certificates));
+
+app.post('/api/certificates', (req, res) => {
+  const newCertificate = { id: certificates.length > 0 ? Math.max(...certificates.map(c => c.id)) + 1 : 1, ...req.body };
+  certificates.push(newCertificate);
+  res.status(201).json(newCertificate);
+});
+
+app.put('/api/certificates/:id', (req, res) => {
+  const { id } = req.params;
+  const index = certificates.findIndex(c => c.id === parseInt(id));
+  if (index !== -1) {
+    certificates[index] = { ...certificates[index], ...req.body };
+    res.json(certificates[index]);
+  } else {
+    res.status(404).json({ message: 'Certificado não encontrado' });
+  }
+});
+
+app.delete('/api/certificates/:id', (req, res) => {
+  const { id } = req.params;
+  const initialLength = certificates.length;
+  certificates = certificates.filter(c => c.id !== parseInt(id));
+  if (certificates.length < initialLength) {
+    res.status(204).send();
+  } else {
+    res.status(404).json({ message: 'Certificado não encontrado' });
+  }
+});
+
+// --- ROTAS DA API PARA HABILIDADES (SKILLS) ---
+
+app.get('/api/skills', (req, res) => res.json(skillCategories));
+
+app.post('/api/skills', (req, res) => {
+  const newSkillCategory = { id: skillCategories.length > 0 ? Math.max(...skillCategories.map(s => s.id)) + 1 : 1, ...req.body };
+  skillCategories.push(newSkillCategory);
+  res.status(201).json(newSkillCategory);
+});
+
+app.put('/api/skills/:id', (req, res) => {
+  const { id } = req.params;
+  const index = skillCategories.findIndex(s => s.id === parseInt(id));
+  if (index !== -1) {
+    skillCategories[index] = { ...skillCategories[index], ...req.body };
+    res.json(skillCategories[index]);
+  } else {
+    res.status(404).json({ message: 'Categoria de habilidade não encontrada' });
+  }
+});
+
+app.delete('/api/skills/:id', (req, res) => {
+  const { id } = req.params;
+  const initialLength = skillCategories.length;
+  skillCategories = skillCategories.filter(s => s.id !== parseInt(id));
+  if (skillCategories.length < initialLength) {
+    res.status(204).send();
+  } else {
+    res.status(404).json({ message: 'Categoria de habilidade não encontrada' });
+  }
+});
+
+// --- INICIAR O SERVIDOR ---
+app.listen(port, () => {
+  console.log(`Servidor backend rodando em http://localhost:${port}`);
 });

@@ -95,20 +95,5 @@ Para adicionar as suas habilidades: edite o array skillCategories.
 
 Após fazer as alterações, reinicie o servidor backend (node src/server/index.js) para que as novas informações sejam exibidas.
 
-📝 Endpoints da API
-O servidor Express fornece os seguintes endpoints:
-
-GET /api/projects: Retorna a lista de todos os projetos.
-
-POST /api/projects: Adiciona um novo projeto.
-
-PUT /api/projects/:id: Atualiza um projeto existente.
-
-DELETE /api/projects/:id: Remove um projeto.
-
-GET /api/certificates: Retorna a lista de todos os certificados.
-
-GET /api/skills: Retorna a lista de todas as categorias de habilidades.
-
 📄 Licença
 Este projeto é de código aberto. Sinta-se à vontade para o usar como base para o seu próprio portfólio.
