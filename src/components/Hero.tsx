@@ -13,10 +13,10 @@ export function Hero() {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center px-4 pt-16 overflow-hidden">
       {/* Background Gradient */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5" />
-        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-0 -z-10 h-full w-full" aria-hidden="true"> 
+      <div className="absolute top-0 left-0 h-full w-full bg-background" />
+      <div className="absolute inset-0 h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]" />
+      <div className="absolute bottom-0 left-0 h-1/2 w-full bg-[radial-gradient(ellipse_50%_50%_at_50%_100%,rgba(14,165,233,0.1),transparent)]" aria-hidden="true"/>
       </div>
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
@@ -34,14 +34,13 @@ export function Hero() {
           >
             <span className="text-primary">👋 Bem-vindo ao meu portfólio</span>
           </motion.div>
-
+         
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mb-4 bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent"
-          >
-            Olá, eu sou o Nícolas 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="mb-4 text-4xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.3)]">
+            Olá, eu sou o Nícolas
           </motion.h1>
 
           <motion.p
@@ -91,7 +90,7 @@ export function Hero() {
           className="flex gap-4 justify-center"
         >
           {[
-            { icon: Github, href: "https://github.com/seuusuario" },
+            { icon: Github, href: "https://github.com/nicolasffe" },
             { icon: Linkedin, href: "https://linkedin.com/in/seuusuario" },
             { icon: Mail, href: "mailto:seu@email.com" },
           ].map((social, index) => (
